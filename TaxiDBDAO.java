@@ -7,7 +7,15 @@ import java.util.HashMap;
  */
 public class TaxiDBDAO {
 
-    public static HashMap<String,String[]> findChildTelephoneNumbers(){
+
+public static HashMap<String,String[]> login(String username){
+boolean userExists = false;
+
+userExists=true;
+    return userExists;
+}
+
+    public static HashMap<String,String[]> findChildTelephoneNumbers(String username){
 
         HashMap<String,String[]> childDetMap = new HashMap<String,String[]>();
         //id ->> {child name, tel}
