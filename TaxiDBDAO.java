@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class TaxiDBDAO {
 
 
-public static HashMap<String,String[]> login(String username){
+public static boolean login(String username){
 boolean userExists = false;
 
 userExists=true;
