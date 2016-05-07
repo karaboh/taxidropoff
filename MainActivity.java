@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Created by Peter on 2016-04-28.
@@ -37,10 +42,7 @@ public class MainActivity extends ActionBarActivity {
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ed1.getText().toString().equals("admin") &&
-                        ed2.getText().toString().equals("admin"))
-
-                {
+                if(ed1 !=null && ed1.getText() !=null && MainActivity.login(ed2.getText().toString())) {
                     Toast.makeText(getApplicationContext(), "Redirecting...", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent("android.intent.action.MemberList");
                     startActivity(intent);
@@ -89,4 +91,67 @@ public class MainActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    
+    	private static Connection getConnection(){
+		
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			//ERROR MYQL JDBC Driver
+			System.out.println("-------- MERROR MYQL JDBC Driver ------------");
+	e.printStackTrace();
+			
+			return null;
+		}
+
+		System.out.println("MySQL JDBC Driver Registered!");
+		Connection connection = null;
+
+		try {
+			connection = DriverManager
+			.getConnection("jdbc:mysql://ec2-54-174-254-66.compute-1.amazonaws.com:3306/IDOLDB","username", "password");
+
+		} catch (SQLException e) {
+			//ERROR Connection Failed! Check output console
+			e.printStackTrace();
+			return null;
+		}
+		return connection;
+	}
+	
+	public static boolean login(String username)  {
+		boolean userExists = false;
+		
+		
+		 Connection connection = MainActivity.getConnection();
+		if (connection != null) {
+			Connection conn = null;
+			Statement stmt = null;
+			ResultSet rs = null;
+			try{
+			stmt = connection.createStatement();
+			//TODO must change , security vunerability sql injection
+			rs = stmt.executeQuery("SELECT * FROM IDOLDB.TAXI_USER where USER_NAME='"+username+"'");
+			while (rs.next()) {
+				String id = rs.getString("ID");
+				String userName = rs.getString("USER_NAME");
+				System.out.println("ID: " + id + ", User Name: " + username	);
+			    }
+			}
+			catch (SQLException e){
+				//ERROR getting user info
+				e.printStackTrace();
+				return userExists;
+		    }
+		
+		} else {
+			System.out.println("Failed to make connection!");
+			return userExists;
+		}
+	  
+		userExists = true;
+		return userExists;
+	}
+
 }
